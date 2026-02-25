@@ -1,12 +1,11 @@
 import PageContainer from "../../components/ui/PageContainer";
 import { usePostsStore } from "../posts/posts.store";
 import PostCard from "../posts/components/PostCard";
-import { selectMyPosts } from "../posts/posts.selectors";
 
 export default function ProfilePage() {
   const posts = usePostsStore((s) => s.posts);
 
-  const myPosts = selectMyPosts(posts);
+  const myPosts = posts.filter((post) => post.userId === usePostsStore((s) => s.currentUserId));
 
   return (
     <PageContainer>

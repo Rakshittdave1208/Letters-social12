@@ -3,39 +3,51 @@ import type { Post } from "./types";
 import { fetchPostsAPI } from "./posts.api";
 
 type PostsState = {
+  currentUserId: string | null;
   posts: Post[];
   loading: boolean;
   error: string | null;
+  hasLoaded: boolean; // ✅ Added
   fetchPosts: () => Promise<void>;
   addPost: (content: string) => void;
   likePost: (id: string) => void;
-  addComment: (postId: string, content: string) => void; // ✅ Added
+  addComment: (postId: string, content: string) => void;
 };
 
-export const usePostsStore = create<PostsState>((set) => ({
+export const usePostsStore = create<PostsState>((set, get) => ({
+  currentUserId: "user-1",
   posts: [],
   loading: false,
   error: null,
+  hasLoaded: false, // ✅ Initialized
 
-  fetchPosts: async () => {
-    try {
-      set({ loading: true, error: null });
+  fetchPosts: async (force = false) => {
+  set((state) => {
+    if (state.hasLoaded && !force) return state;
+    return { loading: true, error: null };
+  });
 
-      const posts = await fetchPostsAPI();
+  try {
+    const posts = await fetchPostsAPI();
 
-      set({ posts, loading: false });
-    } catch {
-      set({
-        loading: false,
-        error: "Failed to load posts",
-      });
-    }
-  },
+    set({
+      posts,
+      loading: false,
+      hasLoaded: true,
+    });
+  } catch {
+    set({
+      loading: false,
+      error: "Failed to load posts",
+    });
+  }
+},
 
   addPost: (content) =>
     set((state) => ({
       posts: [
         {
+          userId: state.currentUserId ?? "user-1",
           id: Date.now().toString(),
           author: "You",
           content,
@@ -56,7 +68,6 @@ export const usePostsStore = create<PostsState>((set) => ({
       ),
     })),
 
-  // ✅ ADD COMMENT IMPLEMENTATION
   addComment: (postId, content) =>
     set((state) => ({
       posts: state.posts.map((post) =>

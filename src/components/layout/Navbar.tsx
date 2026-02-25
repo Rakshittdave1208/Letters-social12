@@ -1,7 +1,9 @@
 import { NavLink } from "react-router-dom";
 import type { ReactNode } from "react";
-
+import { useAuth } from "../../features/auth/hooks/useAuth";
 export default function Navbar() {
+  const { user, logout } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
       <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -26,13 +28,21 @@ export default function Navbar() {
         </nav>
 
         {/* Right side */}
-        <NavLink
-          to="/login"
-          className="px-4 py-1.5 rounded-md bg-black text-white text-sm font-medium hover:bg-gray-800 transition active:scale-95"
-        >
-          Login
-        </NavLink>
-
+        {user ? (
+          <button
+            onClick={logout}
+            className="px-4 py-1.5 rounded-md bg-black text-white text-sm font-medium hover:bg-gray-800 transition active:scale-95"
+          >
+            Logout ({user.name})
+          </button>
+        ) : (
+          <NavLink
+            to="/login"
+            className="px-4 py-1.5 rounded-md bg-black text-white text-sm font-medium hover:bg-gray-800 transition active:scale-95"
+          >
+            Login
+          </NavLink>
+        )}
       </div>
     </header>
   );

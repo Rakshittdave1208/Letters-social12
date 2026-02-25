@@ -3,6 +3,7 @@ import type { Post } from "../types";
 import { usePostsStore } from "../posts.store";
 import PostActions from "./PostActions";
 import CommentSection from "../../comments/components/CommentSection";
+import { Link } from "react-router-dom";
 
 type Props = {
   post: Post;
@@ -33,6 +34,12 @@ export default function PostCard({ post }: Props) {
 
         {/* ⭐ Comment Section */}
         <CommentSection comments={post.comments ?? []} postId={""} />
+        <Link to={`/post/${post.id}`}>
+          <p className="text-gray-800 leading-relaxed">
+          {post.content}
+          </p>
+        </Link>
+
 
       </div>
     </Card>
