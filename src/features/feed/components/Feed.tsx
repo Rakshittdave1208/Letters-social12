@@ -1,34 +1,22 @@
-import { useEffect } from "react";
-import { usePosts } from "../../posts/hooks/usePosts";
+import { useFeed } from "../hooks/useFeed";
 import PostCard from "../../posts/components/PostCard";
 import CreatePost from "../../posts/components/CreatePost";
-
-import LoadingState from "../../../components/common/LoadingState";
-import EmptyState from "../../../components/common/EmptyState";
-import ErrorState from "../../../components/common/ErrorState";
+import { usePosts } from "../../posts/hooks/usePosts";
 
 export default function Feed() {
-  const { posts, loading, error, fetchPosts, addPost } =
-    usePosts();
+  const { posts, loading, error } = useFeed();
+  const { addPost } = usePosts();
 
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
-
-  if (loading) return <LoadingState />;
-  if (error) return <ErrorState message={error} />;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="space-y-4">
       <CreatePost onCreate={addPost} />
 
-      {!posts.length ? (
-        <EmptyState />
-      ) : (
-        posts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))
-      )}
+      {posts.map((post) => (
+        <PostCard key={post.id} post={post} />
+      ))}
     </div>
   );
 }

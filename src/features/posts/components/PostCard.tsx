@@ -1,16 +1,25 @@
+import React, { useState, useCallback } from "react";
 import Card from "../../../components/ui/Card";
 import type { Post } from "../types";
-import { usePostsStore } from "../posts.store";
 import PostActions from "./PostActions";
 import CommentSection from "../../comments/components/CommentSection";
 import { Link } from "react-router-dom";
+import { useLikePost } from "../hooks/useLikePost";
 
 type Props = {
   post: Post;
 };
 
-export default function PostCard({ post }: Props) {
-  const likePost = usePostsStore((s) => s.likePost);
+function PostCard({ post }: Props) {
+  const [showComments, setShowComments] = useState(false);
+
+  // React Query mutation
+  const likeMutation = useLikePost();
+
+  // stable callback
+  const handleLike = useCallback(() => {
+    likeMutation.mutate(post.id);
+  }, [likeMutation, post.id]);
 
   return (
     <Card>
@@ -22,26 +31,37 @@ export default function PostCard({ post }: Props) {
         </div>
 
         {/* Content */}
-        <p className="text-gray-800 leading-relaxed">
-          {post.content}
-        </p>
-
-        {/* Actions (Like etc.) */}
-        <PostActions
-          likes={post.likes}
-          onLike={() => likePost(post.id)}
-        />
-
-        {/* ⭐ Comment Section */}
-        <CommentSection comments={post.comments ?? []} postId={""} />
         <Link to={`/post/${post.id}`}>
-          <p className="text-gray-800 leading-relaxed">
-          {post.content}
+          <p className="text-gray-800 leading-relaxed cursor-pointer hover:underline">
+            {post.content}
           </p>
         </Link>
 
+        {/* Actions */}
+        <PostActions
+          likes={post.likes}
+          onLike={handleLike}
+          isLiking={likeMutation.isPending}
+        />
+
+        {/* Toggle Comments */}
+        <button
+          onClick={() => setShowComments((v) => !v)}
+          className="text-sm text-gray-500 hover:text-black transition"
+        >
+          💬 {showComments ? "Hide comments" : "Show comments"}
+        </button>
+
+        {showComments && (
+          <CommentSection
+            comments={post.comments ?? []}
+            postId={post.id}
+          />
+        )}
 
       </div>
     </Card>
   );
 }
+
+export default React.memo(PostCard);

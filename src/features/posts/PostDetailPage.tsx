@@ -1,21 +1,15 @@
 import { useParams } from "react-router-dom";
-import { usePosts } from "./hooks/usePosts";
+import { usePostQuery } from "./hooks/usePostsQuery";
 import PostCard from "./components/PostCard";
-import PageContainer from "../../components/ui/PageContainer";
 
 export default function PostDetailPage() {
   const { id } = useParams();
-  const { posts } = usePosts();
 
-  const post = posts.find((p) => p.id === id);
+  const { data: post, isLoading } = usePostQuery(id);
 
-  if (!post) {
-    return <p className="p-6">Post not found</p>;
-  }
+  if (isLoading) return <p>Loading...</p>;
 
-  return (
-    <PageContainer>
-      <PostCard post={post} />
-    </PageContainer>
-  );
+  if (!post) return <p>Post not found</p>;
+
+  return <PostCard post={post} />;
 }

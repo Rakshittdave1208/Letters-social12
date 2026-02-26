@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import type { Post } from "./types";
-import { fetchPostsAPI } from "./posts.api";
-
+import { getPosts } from "../../services/posts.service";
 type PostsState = {
   currentUserId: string | null;
   posts: Post[];
@@ -14,21 +13,20 @@ type PostsState = {
   addComment: (postId: string, content: string) => void;
 };
 
-export const usePostsStore = create<PostsState>((set, get) => ({
+export const usePostsStore = create<PostsState>((set) => ({
   currentUserId: "user-1",
   posts: [],
   loading: false,
   error: null,
   hasLoaded: false, // ✅ Initialized
 
-  fetchPosts: async (force = false) => {
-  set((state) => {
-    if (state.hasLoaded && !force) return state;
-    return { loading: true, error: null };
-  });
+  fetchPosts: async () => {
+  
 
   try {
-    const posts = await fetchPostsAPI();
+    set({loading:true,error:null})
+
+    const posts = await getPosts();
 
     set({
       posts,
