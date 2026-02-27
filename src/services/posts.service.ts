@@ -21,22 +21,22 @@ export async function getPosts(
       const end = start + PAGE_SIZE;
 
       resolve(mockPosts.slice(start, end));
-    }, 600); // simulate network delay
+    }, 600);
   });
 }
 
 /* ======================================================
-   LIKE POST (Mutation)
+   GET SINGLE POST
 ====================================================== */
 
-export async function likePostAPI(
+export async function getPostById(
   postId: string
-): Promise<void> {
+): Promise<Post | undefined> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log("Liked post:", postId);
-      resolve();
-    }, 400);
+      const post = mockPosts.find((p) => p.id === postId);
+      resolve(post);
+    }, 500);
   });
 }
 
@@ -49,9 +49,27 @@ export async function createPostAPI(
 ): Promise<Post> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log("Created post:", post);
+      mockPosts.unshift(post); // add to top
       resolve(post);
     }, 500);
+  });
+}
+
+/* ======================================================
+   LIKE POST (Mutation)
+====================================================== */
+
+export async function likePostAPI(
+  postId: string
+): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const post = mockPosts.find((p) => p.id === postId);
+      if (post) {
+        post.likes += 1;
+      }
+      resolve();
+    }, 400);
   });
 }
 
@@ -65,18 +83,11 @@ export async function addCommentAPI(
 ): Promise<Comment> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log("Added comment to:", postId);
+      const post = mockPosts.find((p) => p.id === postId);
+      if (post) {
+        post.comments.push(comment);
+      }
       resolve(comment);
     }, 400);
-  });
-}
-export async function getPostById(
-  postId: string
-): Promise<Post | undefined> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const post = mockPosts.find((p) => p.id === postId);
-      resolve(post);
-    }, 500);
   });
 }

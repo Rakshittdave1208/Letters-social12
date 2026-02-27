@@ -1,40 +1,36 @@
-import {useState} from "react";
+import { useState } from "react";
 import Card from "../../../components/ui/Card";
+import { useCreatePost } from "../hooks/useCreatePost";
 
-type Props={
-  onCreate:(content:string)=>void
-};
+export default function CreatePost() {
+  const [content, setContent] = useState("");
+  const createPost = useCreatePost();
 
-export default function CreatePost({onCreate}:Props){
-  const[text,setText]=useState("");
-   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSubmit() {
+    if (!content.trim()) return;
 
-    if (!text.trim()) return;
+    createPost.mutate(content);
+    setContent("");
+  }
 
-    onCreate(text);
-    setText("");
-}
-return(
-  <Card>
-      <form onSubmit={handleSubmit} className="space-y-3">
+  return (
+    <Card>
+      <div className="space-y-3">
         <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Write a letter..."
-          className="w-full border rounded-lg p-3 resize-none focus:outline-none"
-          rows={3}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="What's on your mind?"
+          className="w-full border rounded-md p-2"
         />
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-black text-white px-4 py-2 rounded-md text-sm"
-          >
-            Post
-          </button>
-        </div>
-      </form>
+        <button
+          onClick={handleSubmit}
+          disabled={createPost.isPending}
+          className="px-4 py-2 bg-black text-white rounded-md"
+        >
+          {createPost.isPending ? "Posting..." : "Post"}
+        </button>
+      </div>
     </Card>
-);
+  );
 }

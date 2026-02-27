@@ -10,22 +10,13 @@ export default function PostActions({
   isLiking,
 }: Props) {
   return (
-    <div className="flex items-center gap-3">
-
-      <button
-        onClick={onLike}
-        disabled={isLiking}
-        className="text-sm text-gray-600 hover:text-black disabled:opacity-50 transition"
-      >
-        ❤️ {likes}
-      </button>
-
-      {isLiking && (
-        <span className="text-xs text-gray-400">
-          Updating...
-        </span>
-      )}
-
-    </div>
+    <button
+      onClick={onLike}
+      disabled={isLiking}
+      className="flex items-center gap-2 text-sm text-gray-600 hover:text-black"
+    >
+      ❤️ {likes}
+      {isLiking && <span>Updating...</span>}
+    </button>
   );
 }

@@ -18,9 +18,13 @@ export default function AppLayout() {
     <div>
       <Navbar />
 
-      {isBusy && (
-        <div className="h-1 bg-black animate-pulse transition-all duration-300" />
-      )}
+      {/* Smooth global loading bar */}
+      <div
+        className={`
+          h-1 bg-black transition-all duration-300
+          ${isBusy ? "opacity-100" : "opacity-0"}
+        `}
+      />
 
       <Outlet />
     </div>

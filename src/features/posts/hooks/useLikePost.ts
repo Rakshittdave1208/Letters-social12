@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { likePostAPI } from "../../../services/posts.service";
+import { likePostAPI } from "../api/posts.api";
 import type { Post } from "../types";
 
 export function useLikePost() {
@@ -8,37 +8,37 @@ export function useLikePost() {
   return useMutation({
     mutationFn: likePostAPI,
 
-    // ⭐ OPTIMISTIC UPDATE
+    // ⭐ optimistic update
     onMutate: async (postId: string) => {
       await queryClient.cancelQueries({ queryKey: ["posts"] });
 
-      const previousPosts =
-        queryClient.getQueryData<Post[]>(["posts"]);
+      const previous =
+        queryClient.getQueryData<any>(["posts"]);
 
-      queryClient.setQueryData<Post[]>(
-        ["posts"],
-        (oldPosts = []) =>
-          oldPosts.map((post) =>
-            post.id === postId
-              ? { ...post, likes: post.likes + 1 }
-              : post
-          )
-      );
+      queryClient.setQueryData<any>(["posts"], (old: { pages: Post[][]; }) => {
+        if (!old) return old;
 
-      return { previousPosts };
+        return {
+          ...old,
+          pages: old.pages.map((page: Post[]) =>
+            page.map((p) =>
+              p.id === postId
+                ? { ...p, likes: p.likes + 1 }
+                : p
+            )
+          ),
+        };
+      });
+
+      return { previous };
     },
 
-    // ⭐ rollback if error
-    onError: (_err, _postId, context) => {
-      if (context?.previousPosts) {
-        queryClient.setQueryData(
-          ["posts"],
-          context.previousPosts
-        );
+    onError: (_err, _id, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["posts"], context.previous);
       }
     },
 
-    // ⭐ ensure sync with server
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["posts"],
