@@ -1,35 +1,35 @@
+// src/features/feed/FeedPage.tsx
+// ─────────────────────────────────────────────────────────
+// Now uses useRealtimeFeed instead of useInfinitePosts.
+// Feed updates instantly when any user posts or likes.
+// ─────────────────────────────────────────────────────────
+
 import AppPage from "../../components/common/AppPage";
 import InfiniteLoader from "../../components/common/InfiniteLoader";
-
-import { useInfinitePosts } from "../posts/hooks/useInfinitePosts";
 import PostCard from "../posts/components/PostCard";
 import CreatePost from "../posts/components/CreatePost";
 import PostSkeleton from "../posts/components/PostSkeleton";
+import { useRealtimeFeed } from "../posts/hooks/useRealtime";
 
 export default function FeedPage() {
-  const query = useInfinitePosts();
-
-  const posts = query.data?.pages.flat() ?? [];
+  const { posts, isLoading, error, hasMore, isFetchingMore, loadMore } =
+    useRealtimeFeed();
 
   return (
-    <AppPage
-      isLoading={query.isLoading}
-      error={query.error}
-    >
+    <AppPage isLoading={isLoading} error={error}>
       <div className="space-y-4">
 
-        {/* ⭐ CREATE POST INPUT */}
+        {/* ⭐ CREATE POST */}
         <CreatePost />
 
-        {/* ⭐ POSTS */}
+        {/* ⭐ LIVE POSTS */}
         {posts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}
 
-        {/* ⭐ SKELETON LOADING FOR NEXT PAGE */}
-        {query.isFetchingNextPage && (
+        {/* ⭐ SKELETON WHILE LOADING MORE */}
+        {isFetchingMore && (
           <>
-            <PostSkeleton />
             <PostSkeleton />
             <PostSkeleton />
           </>
@@ -37,10 +37,17 @@ export default function FeedPage() {
 
         {/* ⭐ INFINITE LOADER */}
         <InfiniteLoader
-          hasNextPage={query.hasNextPage}
-          isFetching={query.isFetchingNextPage}
-          onLoadMore={() => query.fetchNextPage()}
+          hasNextPage={hasMore}
+          isFetching={isFetchingMore}
+          onLoadMore={loadMore}
         />
+
+        {/* ⭐ END OF FEED */}
+        {!hasMore && posts.length > 0 && (
+          <p className="text-center text-sm text-gray-400 py-4">
+            You've reached the end ✨
+          </p>
+        )}
 
       </div>
     </AppPage>

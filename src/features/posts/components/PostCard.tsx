@@ -1,3 +1,4 @@
+// src/features/posts/components/PostCard.tsx
 import React, { useState, useCallback } from "react";
 import Card from "../../../components/ui/Card";
 import type { Post } from "../types";
@@ -5,6 +6,7 @@ import PostActions from "./PostActions";
 import CommentSection from "../../comments/components/CommentSection";
 import { Link } from "react-router-dom";
 import { useLikePost } from "../hooks/useLikePost";
+import { useAuthStore } from "../../auth/auth.store";
 
 type Props = {
   post: Post;
@@ -12,22 +14,23 @@ type Props = {
 
 function PostCard({ post }: Props) {
   const [showComments, setShowComments] = useState(false);
-
-  // React Query mutation
   const likeMutation = useLikePost();
+  const user = useAuthStore((s) => s.user);
 
-  // stable callback
+  // Check if current user already liked this post
+  const hasLiked = user ? post.likedBy?.includes(user.id) : false;
+
   const handleLike = useCallback(() => {
-    likeMutation.mutate(post.id);
-  }, [likeMutation, post.id]);
+    likeMutation.mutate({ postId: post.id, hasLiked: !!hasLiked });
+  }, [likeMutation, post.id, hasLiked]);
 
   return (
     <Card>
       <div className="space-y-4">
-
-        {/* Author */}
-        <div className="font-semibold text-gray-900">
-          {post.author}
+        {/* Author + time */}
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-gray-900">{post.author}</span>
+          <span className="text-xs text-gray-400">{post.createdAt}</span>
         </div>
 
         {/* Content */}
@@ -42,6 +45,7 @@ function PostCard({ post }: Props) {
           likes={post.likes}
           onLike={handleLike}
           isLiking={likeMutation.isPending}
+          hasLiked={!!hasLiked}
         />
 
         {/* Toggle Comments */}
@@ -58,7 +62,6 @@ function PostCard({ post }: Props) {
             postId={post.id}
           />
         )}
-
       </div>
     </Card>
   );

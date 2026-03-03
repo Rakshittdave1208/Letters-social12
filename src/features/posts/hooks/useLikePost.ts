@@ -1,29 +1,38 @@
+// src/features/posts/hooks/useLikePost.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { likePostAPI } from "../api/posts.api";
+import { useAuthStore } from "../../auth/auth.store";
 import type { Post } from "../types";
 
 export function useLikePost() {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
   return useMutation({
-    mutationFn: likePostAPI,
+    mutationFn: ({ postId, hasLiked }: { postId: string; hasLiked: boolean }) => {
+      if (!user) throw new Error("Not authenticated");
+      return likePostAPI(postId, user.id, hasLiked);
+    },
 
-    // ⭐ optimistic update
-    onMutate: async (postId: string) => {
+    // ── Optimistic update ─────────────────────────────
+    onMutate: async ({ postId, hasLiked }) => {
       await queryClient.cancelQueries({ queryKey: ["posts"] });
+      const previous = queryClient.getQueryData(["posts"]);
 
-      const previous =
-        queryClient.getQueryData<any>(["posts"]);
-
-      queryClient.setQueryData<any>(["posts"], (old: { pages: Post[][]; }) => {
+      queryClient.setQueryData<any>(["posts"], (old: { pages: Post[][] }) => {
         if (!old) return old;
-
         return {
           ...old,
           pages: old.pages.map((page: Post[]) =>
             page.map((p) =>
               p.id === postId
-                ? { ...p, likes: p.likes + 1 }
+                ? {
+                    ...p,
+                    likes:   p.likes + (hasLiked ? -1 : 1),
+                    likedBy: hasLiked
+                      ? p.likedBy.filter((id) => id !== user?.id)
+                      : [...p.likedBy, user?.id ?? ""],
+                  }
                 : p
             )
           ),
@@ -33,16 +42,14 @@ export function useLikePost() {
       return { previous };
     },
 
-    onError: (_err, _id, context) => {
+    onError: (_err, _vars, context) => {
       if (context?.previous) {
         queryClient.setQueryData(["posts"], context.previous);
       }
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["posts"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 }
