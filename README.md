@@ -82,51 +82,103 @@ The platform allows users to create posts, interact with others, bookmark conten
 
 ---
 
-# 📂 Project Structure
+#📂 Project Structure
 
-```
+The project follows a feature-based architecture where each feature manages its own components, hooks, APIs, and logic.
+
 letters-social
 │
+├── public
+│   └── vite.svg
+│
 ├── src
-│   │
+│
+│   ├── app
+│   │   └── layout
+│
 │   ├── components
-│   │   ├── PostCard.tsx
-│   │   ├── CommentSection.tsx
-│   │   ├── BookmarkButton.tsx
-│   │   └── SearchBar.tsx
-│   │
-│   ├── pages
-│   │   ├── HomePage.tsx
-│   │   ├── SearchPage.tsx
-│   │   ├── ProfilePage.tsx
-│   │   └── BookmarksPage.tsx
 │   │
 │   ├── features
-│   │   ├── posts
-│   │   ├── comments
+│   │
+│   │   ├── auth
+│   │   │
 │   │   ├── bookmarks
-│   │   └── notifications
+│   │   │
+│   │   ├── comments
+│   │   │   └── CommentSection.tsx
+│   │   │
+│   │   ├── feed
+│   │   │
+│   │   ├── follow
+│   │   │   ├── hooks
+│   │   │   └── follow.api.ts
+│   │   │
+│   │   ├── notification
+│   │   │   ├── components
+│   │   │   │   └── NotificationBell.tsx
+│   │   │   ├── hooks
+│   │   │   │   └── useNotifications.ts
+│   │   │   └── notification.api.ts
+│   │   │
+│   │   ├── posts
+│   │   │   ├── api
+│   │   │   │   └── posts.api.ts
+│   │   │   │
+│   │   │   ├── components
+│   │   │   │   ├── CreatePost.tsx
+│   │   │   │   ├── PostActions.tsx
+│   │   │   │   ├── PostCard.tsx
+│   │   │   │   └── PostSkeleton.tsx
+│   │   │   │
+│   │   │   ├── data
+│   │   │   ├── hooks
+│   │   │   │
+│   │   │   ├── PostDetailPage.tsx
+│   │   │   ├── posts.selectors.ts
+│   │   │   ├── posts.store.ts
+│   │   │   └── types.ts
 │   │
-│   ├── hooks
-│   │   ├── useCreatePost.ts
-│   │   ├── useBookmarks.ts
-│   │   └── useComments.ts
+│   │   ├── profile
+│   │   │   └── ProfilePage.tsx
 │   │
+│   │   ├── search
+│   │   │   └── SearchPage.tsx
+│
 │   ├── lib
 │   │   └── firebase.ts
-│   │
-│   ├── store
-│   │   └── store.ts
-│   │
-│   ├── test
-│   │   └── setup.ts
-│   │
-│   ├── App.tsx
-│   └── main.tsx
 │
-├── public
+│   ├── pages
+│   │   ├── Home.tsx
+│   │   └── RouteError.tsx
+│
+│   ├── services
+│   │   └── posts.service.ts
+│
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── App.css
+│   └── index.css
+│
+├── .env
 ├── package.json
 └── README.md
+Architecture Pattern
+
+This project follows a Feature-Based Modular Architecture:
+
+Each feature (posts, comments, bookmarks, notifications, etc.) manages its own:
+
+components
+
+hooks
+
+API logic
+
+types
+
+state management
+
+This makes the project highly scalable and maintainable.
 ```
 
 ---
