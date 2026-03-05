@@ -8,6 +8,13 @@
 import { create } from "zustand";
 
 type PostsUIState = {
+  posts: any;
+  loading: any;
+  error: any;
+  addComment: any;
+  fetchPosts: any;
+  likePost: any;
+  addPost: any;
   currentUserId: string | null;
 
   selectedPostId:    string | null;

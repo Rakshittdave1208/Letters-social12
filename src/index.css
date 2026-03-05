@@ -1,1 +1,12 @@
-@import "tailwindcss"
+@import "tailwindcss";
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900;
+  }
+
+  .dark body {
+    @apply bg-gray-950 text-white;
+  }
+}

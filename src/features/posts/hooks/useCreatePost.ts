@@ -1,38 +1,29 @@
-// src/features/posts/hooks/useCreatePost.ts
-import {
-  useMutation,
-  useQueryClient,
-  type InfiniteData,
-} from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../../../lib/firebase";
 import { useAuthStore } from "../../auth/auth.store";
-import { createPostAPI } from "../api/posts.api";
-import type { Post } from "../types";
 
 export function useCreatePost() {
-  const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
 
   return useMutation({
-    mutationFn: (content: string) => {
-      if (!user) throw new Error("Not authenticated");
-      return createPostAPI(content, user.id, user.name);
+    mutationFn: async (content: string) => {
+      console.log("user:", user);
+      console.log("db:", db);
+      if (!user) throw new Error("Not logged in");
+      const result = await addDoc(collection(db, "posts"), {
+        userId: user.id,
+        author: user.name,
+        content: content.trim(),
+        likes: 0,
+        likedBy: [],
+        comments: [],
+        createdAt: serverTimestamp(),
+      });
+      console.log("Post created:", result.id);
     },
-
-    // Optimistic update — UI feels instant
-    onSuccess: (newPost) => {
-      queryClient.setQueryData<InfiniteData<Post[]>>(
-        ["posts"],
-        (old) => {
-          if (!old) return old;
-          return {
-            ...old,
-            pages: [
-              [newPost, ...old.pages[0]],
-              ...old.pages.slice(1),
-            ],
-          };
-        }
-      );
+    onError: (err) => {
+      console.error("Create post error:", err);
     },
   });
 }

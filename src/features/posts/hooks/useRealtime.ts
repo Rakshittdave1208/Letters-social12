@@ -1,4 +1,3 @@
-// src/features/posts/hooks/useRealtimeFeed.ts
 // ─────────────────────────────────────────────────────────
 // Replaces useInfinitePosts for the main feed.
 // Uses Firestore onSnapshot so the feed updates instantly
@@ -17,7 +16,7 @@ import {
   type DocumentSnapshot,
   type Unsubscribe,
 } from "firebase/firestore";
-import { db } from "../../auth/lib/firebase";
+import { db } from "../../../lib/firebase";
 import type { Post } from "../types";
 
 const PAGE_SIZE = 10;

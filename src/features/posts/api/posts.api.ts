@@ -21,7 +21,7 @@ import {
   serverTimestamp,
   type DocumentSnapshot,
 } from "firebase/firestore";
-import { db } from "../../auth/lib/firebase";
+import { db } from "../../../lib/firebase";
 import type { Post } from "../types";
 
 const PAGE_SIZE = 5;

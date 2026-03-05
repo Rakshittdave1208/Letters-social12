@@ -29,13 +29,17 @@ function PostCard({ post }: Props) {
       <div className="space-y-4">
         {/* Author + time */}
         <div className="flex items-center justify-between">
-          <span className="font-semibold text-gray-900">{post.author}</span>
-          <span className="text-xs text-gray-400">{post.createdAt}</span>
+          <span className="font-semibold text-sm tracking-tight text-gray-900 dark:text-white">
+            {post.author}
+          </span>
+          <span className="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">
+            {post.createdAt}
+          </span>
         </div>
 
         {/* Content */}
         <Link to={`/post/${post.id}`}>
-          <p className="text-gray-800 leading-relaxed cursor-pointer hover:underline">
+          <p className="text-[15px] leading-relaxed font-medium text-gray-100 dark:text-gray-50 cursor-pointer hover:text-white transition-colors">
             {post.content}
           </p>
         </Link>
