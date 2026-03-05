@@ -49,7 +49,7 @@ export default function CommentSection({ comments, postId }: Props) {
       ) : (
         comments.map((comment) => (
           <div key={comment.id} className="flex gap-2">
-            <div className="w-6 h-6 rounded-full bg-linear-to-br from-gray-400 to-gray-600 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-full bg-linear-to-br from-gray-400 to-gray-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
               {comment.author?.[0]?.toUpperCase() ?? "?"}
             </div>
             <div className="flex-1 bg-gray-50 dark:bg-gray-800 rounded-xl px-3 py-2">

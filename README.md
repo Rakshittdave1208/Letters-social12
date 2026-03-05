@@ -162,6 +162,13 @@ letters-social
 ├── .env
 ├── package.json
 └── README.md
+
+
+
+
+
+
+
 Architecture Pattern
 
 This project follows a Feature-Based Modular Architecture:
