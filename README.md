@@ -1,91 +1,115 @@
 # Letters Social
 
-A modern social media web application built with **React** inspired by the project from *React in Action*.
-The platform allows users to create posts, interact with others, bookmark content, search users/posts, and receive real-time notifications.
+A modern **social media web application** built with **React, TypeScript, and Firebase**.
+Letters Social allows users to share posts, interact with other users through comments and likes, bookmark content, follow users, and receive real-time notifications.
+
+This project is inspired by the book **React in Action** and extended with modern tools like **Redux Toolkit, Firebase, and feature-based architecture**.
 
 ---
 
 # 🚀 Features
 
-### Core Features
+## Core Social Features
 
-* 📝 Create and share posts
-* ❤️ Like posts and interact with other users
-* 🔔 Real-time notifications
-* 🔐 Secure user authentication
-* ⚡ Optimized state management with Redux Toolkit
-* 🔄 Real-time database integration with Firebase
-* 🧪 Testing with React Testing Library & Vitest
+### 📝 Posts
 
----
+* Create posts
+* View posts in a feed
+* Post detail pages
+* Like posts
+* Post actions (edit / delete ready for extension)
 
-### Social Interaction Features
+### 💬 Comments
 
-* 💬 **Comments System**
+* Add comments to posts
+* View comments in a thread
+* Real-time updates
+* Comment section integrated with each post
 
-  * Add comments on posts
-  * View discussion threads
-  * Real-time comment updates
+### 🔖 Bookmarks
 
-* 🔖 **Bookmarks**
+* Save posts for later
+* Personal bookmark list
+* Quick access to saved posts
 
-  * Save posts for later reading
-  * Personal bookmark collection
-  * Quick access to saved content
+### 🔔 Notifications
 
----
+* Real-time notification updates
+* Notification bell indicator
+* Notifications triggered by interactions
 
-### Discovery Features
+### 👥 Follow System
 
-* 🔍 **Search Page**
+* Follow other users
+* Unfollow users
+* View user connections
 
-  * Search posts
-  * Search users
-  * Fast filtering of content
+### 🔍 Search Page
 
----
+* Search posts
+* Search users
+* Discover content easily
 
-### User Features
+### 👤 Profile Page
 
-* 👤 **User Profile**
-
-  * Profile page for each user
-  * Display user posts
-  * Bookmark list
-  * Profile information
+* View user profile
+* Display user posts
+* Bookmark collection
+* User information
 
 ---
 
 # 🛠️ Tech Stack
 
-### Frontend
+## Frontend
 
 * React
 * TypeScript
+* Vite
 * Redux Toolkit
 * RTK Query
-* Vite
 
-### Backend / Services
+## Backend / Services
 
 * Firebase Authentication
-* Firebase Firestore
+* Firebase Firestore Database
 
-### Testing
+## Testing
 
 * Vitest
 * React Testing Library
 
-### Version Control
+## Development Tools
 
-* Git & GitHub
+* Git
+* GitHub
+* ESLint
 
 ---
 
-#📂 Project Structure
+# 🏗️ Architecture
 
-The project follows a feature-based architecture where each feature manages its own components, hooks, APIs, and logic.
+The project follows a **feature-based modular architecture**.
 
+Each feature manages its own:
+
+* components
+* hooks
+* API logic
+* state
+* types
+
+This approach improves:
+
+* scalability
+* maintainability
+* separation of concerns
+
+---
+
+## 📂 Project Structure
+
+```
 letters-social
 │
 ├── public
@@ -97,13 +121,11 @@ letters-social
 │   │   └── layout
 │
 │   ├── components
-│   │
+│
 │   ├── features
 │   │
 │   │   ├── auth
-│   │   │
 │   │   ├── bookmarks
-│   │   │
 │   │   ├── comments
 │   │   │   └── CommentSection.tsx
 │   │   │
@@ -132,7 +154,6 @@ letters-social
 │   │   │   │
 │   │   │   ├── data
 │   │   │   ├── hooks
-│   │   │   │
 │   │   │   ├── PostDetailPage.tsx
 │   │   │   ├── posts.selectors.ts
 │   │   │   ├── posts.store.ts
@@ -159,33 +180,9 @@ letters-social
 │   ├── App.css
 │   └── index.css
 │
-├── .env
+├── .env.example
 ├── package.json
 └── README.md
-
-
-
-
-
-
-
-Architecture Pattern
-
-This project follows a Feature-Based Modular Architecture:
-
-Each feature (posts, comments, bookmarks, notifications, etc.) manages its own:
-
-components
-
-hooks
-
-API logic
-
-types
-
-state management
-
-This makes the project highly scalable and maintainable.
 ```
 
 ---
@@ -194,29 +191,29 @@ This makes the project highly scalable and maintainable.
 
 Clone the repository:
 
-```bash
+```bash id="ymp1u1"
 git clone https://github.com/YOUR_USERNAME/letters-social.git
 ```
 
 Navigate to the project folder:
 
-```bash
+```bash id="we5uhk"
 cd letters-social
 ```
 
 Install dependencies:
 
-```bash
+```bash id="fobnrf"
 npm install
 ```
 
-Run the development server:
+Start the development server:
 
-```bash
+```bash id="1yazth"
 npm run dev
 ```
 
-The app will run at:
+Application runs at:
 
 ```
 http://localhost:5173
@@ -224,93 +221,77 @@ http://localhost:5173
 
 ---
 
-# 🔐 Firebase Setup
+# 🔐 Environment Variables
 
-1. Open Firebase Console
-2. Create a new project
-3. Enable **Authentication**
-4. Enable **Cloud Firestore**
-5. Add your Firebase configuration inside:
+Create a `.env` file in the root directory.
 
+Example:
+
+```env id="1e02o1"
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
 ```
-src/lib/firebase.ts
-```
 
-Example configuration:
-
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_ID",
-  appId: "YOUR_APP_ID"
-}
-```
+These values can be obtained from **Firebase Console → Project Settings → Web App**.
 
 ---
 
 # 🧪 Running Tests
 
-Run all tests:
+Run tests:
 
-```bash
+```bash id="9ekkh7"
 npm run test
 ```
 
-Run tests with UI:
+Run with UI:
 
-```bash
+```bash id="08g6a3"
 npm run test:ui
 ```
 
-Run coverage report:
+Generate coverage report:
 
-```bash
+```bash id="o0zivn"
 npm run test:coverage
 ```
 
-Testing tools used:
-
-* React Testing Library
-* Vitest
+Testing is implemented using **Vitest and React Testing Library**.
 
 ---
 
 # 📸 Screenshots
 
-Add screenshots of your application here.
+You can add screenshots here.
 
-Example sections:
+Example:
 
-```
-Home Feed
-Create Post
-Search Page
-User Profile
-Bookmarks
-Comments Section
-Notifications
-```
+* Home Feed
+* Create Post
+* Post Detail
+* Comment Section
+* Notification Bell
+* Search Page
+* User Profile
+* Bookmarks Page
 
 ---
 
 # 📈 Future Improvements
 
-* Follow / Unfollow users
-* Real-time chat system
+Planned enhancements:
+
 * Image upload for posts
-* Post sharing
-* Dark mode UI
-* Deployment with CI/CD
-* End-to-end testing with Playwright
-
----
-
-# 📚 Learning Source
-
-This project is inspired by the book **React in Action** and extended with modern technologies such as Redux Toolkit, Firebase, and modern testing frameworks.
+* Follow suggestions
+* Real-time chat
+* Dark mode
+* Advanced search filters
+* End-to-end testing
+* Deployment pipeline
 
 ---
 
@@ -318,9 +299,13 @@ This project is inspired by the book **React in Action** and extended with moder
 
 Contributions are welcome.
 
+Steps:
+
 1. Fork the repository
-2. Create a new branch
-3. Submit a pull request
+2. Create a feature branch
+3. Commit changes
+4. Push to your branch
+5. Open a Pull Request
 
 ---
 
@@ -334,5 +319,14 @@ MIT License
 
 **Rakshit Dave**
 
-GitHub: https://github.com/Rakshittdave1208
-LinkedIn: Add your LinkedIn profile here
+GitHub
+https://github.com/Rakshittdave1208
+
+LinkedIn
+(Add your LinkedIn profile here)
+
+---
+
+# 📚 Acknowledgment
+
+Inspired by the book **React in Action** and extended with modern React ecosystem tools.
