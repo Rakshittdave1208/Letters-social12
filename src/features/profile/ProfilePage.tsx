@@ -30,8 +30,8 @@ export default function ProfilePage() {
       try {
         const q = query(
           collection(db, "posts"),
-          where("userId", "==", user!.id),
-          orderBy("createdAt", "desc")
+          where("userId", "==", user!.id)
+        
         );
         const snap = await getDocs(q);
         const myPosts = snap.docs.map((d) => {
