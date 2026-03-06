@@ -10,6 +10,7 @@ const PostDetailPage = lazy(() => import("../features/posts/PostDetailPage"));
 const LoginPage      = lazy(() => import("../features/auth/LoginPage"));
 const SearchPage     = lazy(() => import("../features/search/SearchPage"));
 const BookmarksPage  = lazy(() => import("../features/bookmarks/BookmarksPage"));
+const AnalyticsPage  = lazy(() => import("../features/analytics/AnalyticsPage"));
 
 function PageLoader() {
   return (
@@ -27,55 +28,31 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <FeedPage />
-          </Suspense>
-        ),
+        element: (<Suspense fallback={<PageLoader />}><FeedPage /></Suspense>),
       },
       {
         path: "post/:id",
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <PostDetailPage />
-          </Suspense>
-        ),
+        element: (<Suspense fallback={<PageLoader />}><PostDetailPage /></Suspense>),
       },
       {
         path: "profile",
-        element: (
-          <ProtectedRoute>
-            <Suspense fallback={<PageLoader />}>
-              <ProfilePage />
-            </Suspense>
-          </ProtectedRoute>
-        ),
+        element: (<ProtectedRoute><Suspense fallback={<PageLoader />}><ProfilePage /></Suspense></ProtectedRoute>),
+      },
+      {
+        path: "analytics",
+        element: (<ProtectedRoute><Suspense fallback={<PageLoader />}><AnalyticsPage /></Suspense></ProtectedRoute>),
       },
       {
         path: "search",
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <SearchPage />
-          </Suspense>
-        ),
+        element: (<Suspense fallback={<PageLoader />}><SearchPage /></Suspense>),
       },
       {
         path: "bookmarks",
-        element: (
-          <ProtectedRoute>
-            <Suspense fallback={<PageLoader />}>
-              <BookmarksPage />
-            </Suspense>
-          </ProtectedRoute>
-        ),
+        element: (<ProtectedRoute><Suspense fallback={<PageLoader />}><BookmarksPage /></Suspense></ProtectedRoute>),
       },
       {
         path: "login",
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <LoginPage />
-          </Suspense>
-        ),
+        element: (<Suspense fallback={<PageLoader />}><LoginPage /></Suspense>),
       },
     ],
   },

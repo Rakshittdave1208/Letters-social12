@@ -1,13 +1,13 @@
 # Letters Social
 
-A modern **social media web application** built with **React, TypeScript, and Firebase**.
-Letters Social allows users to share posts, interact with other users through comments and likes, bookmark content, follow users, and receive real-time notifications.
+A modern **social media web application** built with **React, TypeScript, Redux Toolkit, and Firebase**.
+Users can create posts, interact through comments, follow other users, bookmark content, and receive real-time notifications.
 
-This project is inspired by the book **React in Action** and extended with modern tools like **Redux Toolkit, Firebase, and feature-based architecture**.
+This project demonstrates **modern frontend architecture**, **feature-based design**, and **real-time Firebase integration**.
 
 ---
 
-# 🚀 Features
+# Features
 
 ## Core Social Features
 
@@ -44,7 +44,7 @@ This project is inspired by the book **React in Action** and extended with moder
 * Unfollow users
 * View user connections
 
-### 🔍 Search Page
+### 🔍 Search
 
 * Search posts
 * Search users
@@ -59,7 +59,7 @@ This project is inspired by the book **React in Action** and extended with moder
 
 ---
 
-# 🛠️ Tech Stack
+# Tech Stack
 
 ## Frontend
 
@@ -87,7 +87,7 @@ This project is inspired by the book **React in Action** and extended with moder
 
 ---
 
-# 🏗️ Architecture
+# Architecture
 
 The project follows a **feature-based modular architecture**.
 
@@ -99,15 +99,16 @@ Each feature manages its own:
 * state
 * types
 
-This approach improves:
+### Benefits
 
-* scalability
-* maintainability
-* separation of concerns
+* Better scalability
+* Easier maintenance
+* Clear separation of concerns
+* Feature independence
 
 ---
 
-## 📂 Project Structure
+# Project Structure
 
 ```
 letters-social
@@ -187,33 +188,33 @@ letters-social
 
 ---
 
-# ⚙️ Installation
+# Installation
 
 Clone the repository:
 
-```bash id="ymp1u1"
+```
 git clone https://github.com/YOUR_USERNAME/letters-social.git
 ```
 
-Navigate to the project folder:
+Navigate to the project directory:
 
-```bash id="we5uhk"
+```
 cd letters-social
 ```
 
 Install dependencies:
 
-```bash id="fobnrf"
+```
 npm install
 ```
 
 Start the development server:
 
-```bash id="1yazth"
+```
 npm run dev
 ```
 
-Application runs at:
+The application runs at:
 
 ```
 http://localhost:5173
@@ -221,13 +222,13 @@ http://localhost:5173
 
 ---
 
-# 🔐 Environment Variables
+# Environment Variables
 
 Create a `.env` file in the root directory.
 
 Example:
 
-```env id="1e02o1"
+```
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
 VITE_FIREBASE_PROJECT_ID=
@@ -236,27 +237,29 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
 
-These values can be obtained from **Firebase Console → Project Settings → Web App**.
+You can obtain these values from:
+
+**Firebase Console → Project Settings → Web App**
 
 ---
 
-# 🧪 Running Tests
+# Running Tests
 
 Run tests:
 
-```bash id="9ekkh7"
+```
 npm run test
 ```
 
-Run with UI:
+Run tests with UI:
 
-```bash id="08g6a3"
+```
 npm run test:ui
 ```
 
 Generate coverage report:
 
-```bash id="o0zivn"
+```
 npm run test:coverage
 ```
 
@@ -264,7 +267,7 @@ Testing is implemented using **Vitest and React Testing Library**.
 
 ---
 
-# 📸 Screenshots
+# Screenshots
 
 You can add screenshots here.
 
@@ -281,7 +284,7 @@ Example:
 
 ---
 
-# 📈 Future Improvements
+# Future Improvements
 
 Planned enhancements:
 
@@ -291,11 +294,11 @@ Planned enhancements:
 * Dark mode
 * Advanced search filters
 * End-to-end testing
-* Deployment pipeline
+* CI/CD deployment pipeline
 
 ---
 
-# 🤝 Contributing
+# Contributing
 
 Contributions are welcome.
 
@@ -309,13 +312,13 @@ Steps:
 
 ---
 
-# 📄 License
+# License
 
 MIT License
 
 ---
 
-# 👨‍💻 Author
+# Author
 
 **Rakshit Dave**
 
@@ -323,10 +326,10 @@ GitHub
 https://github.com/Rakshittdave1208
 
 LinkedIn
-(Add your LinkedIn profile here)
+(https://www.linkedin.com/in/rakshit-dave-8879ab25a/)
 
 ---
 
-# 📚 Acknowledgment
+# Acknowledgment
 
-Inspired by the book **React in Action** and extended with modern React ecosystem tools.
+Inspired by the book **React in Action** and extended with the modern **React ecosyste**

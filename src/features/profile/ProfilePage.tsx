@@ -1,11 +1,11 @@
 // src/features/profile/ProfilePage.tsx
 import { useEffect, useState } from "react";
-import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useAuth } from "../auth/hooks/useAuth";
-import { useToast } from "../../components/ui/Toast";
 import PostCard from "../posts/components/PostCard";
 import type { Post } from "../posts/types";
+import { PostCardSkeleton, ProfileSkeleton } from "../../components/ui/Skeleton";
 
 function formatTimestamp(ts: any): string {
   if (!ts) return "Just now";
@@ -17,22 +17,31 @@ function formatTimestamp(ts: any): string {
   return date.toLocaleDateString();
 }
 
+function getAvatarColor(name: string) {
+  const colors = [
+    "from-blue-500 to-indigo-600",
+    "from-purple-500 to-pink-600",
+    "from-green-500 to-teal-600",
+    "from-orange-500 to-red-600",
+    "from-cyan-500 to-blue-600",
+    "from-rose-500 to-pink-600",
+  ];
+  return colors[name.charCodeAt(0) % colors.length];
+}
+
 export default function ProfilePage() {
   const { user }              = useAuth();
-  const { toast }             = useToast();
   const [posts, setPosts]     = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
-
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     async function fetchMyPosts() {
       try {
-        const q = query(
-          collection(db, "posts"),
-          where("userId", "==", user!.id)
-        
-        );
+        const q = query(collection(db, "posts"), where("userId", "==", user!.id));
         const snap = await getDocs(q);
         const myPosts = snap.docs.map((d) => {
           const data = d.data();
@@ -49,70 +58,81 @@ export default function ProfilePage() {
         });
         setPosts(myPosts);
       } catch (err) {
-        toast.error("Failed to load your posts.");
+        console.error(err);
       } finally {
         setLoading(false);
       }
     }
-
     fetchMyPosts();
   }, [user]);
 
-  // ── Avatar initials ────────────────────────────────────
-  const initials = user?.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2) ?? "?";
+  const initials      = user?.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) ?? "?";
+  const joinDate      = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const totalLikes    = posts.reduce((acc, p) => acc + p.likes, 0);
+  const totalComments = posts.reduce((acc, p) => acc + (p.comments?.length ?? 0), 0);
+
+  if (!user && !loading) {
+    return (
+      <div className="text-center py-16 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl">
+        <p className="text-5xl mb-4">🔐</p>
+        <p className="font-semibold text-gray-700 dark:text-gray-300">Please log in to view your profile</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-
-      {/* Profile header */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 flex items-center gap-4">
-        {user?.photoURL ? (
-          <img
-            src={user.photoURL}
-            alt={user.name}
-            className="w-16 h-16 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
-          />
-        ) : (
-          <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center text-xl font-bold">
-            {initials}
+    <div className="space-y-5">
+      {loading ? <ProfileSkeleton /> : (
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden">
+          <div className="h-24 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+          <div className="px-6 pb-6">
+            <div className="flex items-end justify-between -mt-10 mb-4">
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt={user.name} className="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-gray-900" />
+              ) : (
+                <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${getAvatarColor(user?.name ?? "A")} text-white flex items-center justify-center text-2xl font-bold ring-4 ring-white dark:ring-gray-900`}>
+                  {initials}
+                </div>
+              )}
+              <button className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                Edit profile
+              </button>
+            </div>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">{user?.name}</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{user?.email}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">📅 Joined {joinDate}</p>
+            <div className="flex gap-8 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+              {[
+                { label: "Posts",    value: posts.length },
+                { label: "Likes",    value: totalLikes },
+                { label: "Comments", value: totalComments },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white">{value}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        )}
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-            {user?.name}
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {user?.email}
-          </p>
-          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-            {posts.length} {posts.length === 1 ? "post" : "posts"}
-          </p>
-        </div>
-      </div>
-
-      {/* Posts */}
-      {loading ? (
-        <div className="flex justify-center py-8">
-          <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : posts.length === 0 ? (
-        <div className="text-center py-12 text-gray-400 dark:text-gray-500">
-          <p className="text-4xl mb-3">✉️</p>
-          <p className="font-medium">No posts yet</p>
-          <p className="text-sm">Share something on the home feed!</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
         </div>
       )}
+
+      <div>
+        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide px-1 mb-3">Posts</h2>
+        {loading ? (
+          <div className="space-y-4"><PostCardSkeleton /><PostCardSkeleton /></div>
+        ) : posts.length === 0 ? (
+          <div className="text-center py-16 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl">
+            <p className="text-5xl mb-4">✉️</p>
+            <p className="font-semibold text-gray-700 dark:text-gray-300">No posts yet</p>
+            <p className="text-sm text-gray-400 mt-1">Share something on the home feed!</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {posts.map((post) => <PostCard key={post.id} post={post} />)}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
