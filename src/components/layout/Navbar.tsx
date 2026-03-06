@@ -8,7 +8,8 @@ export default function Navbar() {
   const { user } = useAuth();
   const { isDark, toggle } = useDarkMode();
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200
+     dark:border-gray-700 shadow-sm transition-colors">
       <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
         <NavLink to="/" className="font-bold text-lg tracking-tight hover:opacity-80 transition text-gray-900 dark:text-white">
           Letters
@@ -55,20 +56,24 @@ function UserMenu() {
     <div ref={ref} className="relative ml-1">
       <button onClick={() => setOpen((o) => !o)} className="rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
         {user.photoURL ? (
-          <img src={user.photoURL} alt={user.name} className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700" />
+          <img src={user.photoURL} alt={user.name} className="w-8 h-8 rounded-full object-cover ring-2
+           ring-gray-200 dark:ring-gray-700" />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center text-xs font-bold">
+          <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-600
+           text-white flex items-center justify-center text-xs font-bold">
             {initials}
           </div>
         )}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1 z-50">
+        <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-lg border
+         border-gray-100 dark:border-gray-700 py-1 z-50">
           <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
             <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{user.name}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
           </div>
-          <button onClick={() => { setOpen(false); logout(); }} className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+          <button onClick={() => { setOpen(false); logout(); }} className="w-full text-left px-4 py-2.5 text-sm
+           text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
             Sign out
           </button>
         </div>
