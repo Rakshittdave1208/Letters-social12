@@ -2,15 +2,11 @@ import type { Post } from "../features/posts/types";
 import type { Comment } from "../features/comments/types";
 import { mockPosts } from "../features/posts/data/mockPosts";
 
-/* ======================================================
-   CONFIG
-====================================================== */
+
 
 const PAGE_SIZE = 5;
 
-/* ======================================================
-   GET POSTS (Paginated Query)
-====================================================== */
+
 
 export async function getPosts(
   page: number
@@ -25,9 +21,6 @@ export async function getPosts(
   });
 }
 
-/* ======================================================
-   GET SINGLE POST
-====================================================== */
 
 export async function getPostById(
   postId: string
@@ -40,9 +33,6 @@ export async function getPostById(
   });
 }
 
-/* ======================================================
-   CREATE POST (Mutation)
-====================================================== */
 
 export async function createPostAPI(
   post: Post
@@ -55,9 +45,6 @@ export async function createPostAPI(
   });
 }
 
-/* ======================================================
-   LIKE POST (Mutation)
-====================================================== */
 
 export async function likePostAPI(
   postId: string
@@ -73,9 +60,7 @@ export async function likePostAPI(
   });
 }
 
-/* ======================================================
-   ADD COMMENT (Mutation)
-====================================================== */
+
 
 export async function addCommentAPI(
   postId: string,

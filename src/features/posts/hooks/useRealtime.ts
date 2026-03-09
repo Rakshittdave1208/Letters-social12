@@ -1,8 +1,3 @@
-// ─────────────────────────────────────────────────────────
-// Replaces useInfinitePosts for the main feed.
-// Uses Firestore onSnapshot so the feed updates instantly
-// when any user creates or likes a post — no refresh needed.
-// ─────────────────────────────────────────────────────────
 
 import { useState, useEffect, useCallback } from "react";
 import {

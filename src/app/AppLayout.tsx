@@ -5,6 +5,7 @@ import { useDarkMode } from "../hooks/useDarkMode";
 import { ToastContainer } from "../components/ui/Toast";
 import { usePresence } from "../hooks/usePresence";
 import OnlineUsers from "../components/ui/OnlineUsers";
+import NotificationBell from "../features/notification/components/NotificationBell";
 
 function getInitials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
@@ -17,6 +18,7 @@ function getAvatarColor(name: string) {
 const navItems = [
   { to: "/",          end: true,  icon: "🏠", label: "Home"      },
   { to: "/search",    end: false, icon: "🔍", label: "Search"    },
+  { to: "/messages",  end: false, icon: "💬", label: "Messages"  },
   { to: "/bookmarks", end: false, icon: "🔖", label: "Bookmarks" },
   { to: "/analytics", end: false, icon: "📊", label: "Analytics" },
   { to: "/profile",   end: false, icon: "👤", label: "Profile"   },
@@ -32,15 +34,13 @@ export default function AppLayout() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors">
       <div className="max-w-5xl mx-auto px-4 flex gap-6 py-4">
 
-        {/* ── Left Sidebar ─────────────────────────── */}
+        {/* Left Sidebar */}
         <aside className="hidden md:flex flex-col w-56 shrink-0 sticky top-4 h-fit gap-1">
-
-          {/* Logo */}
-          <div className="px-3 py-4 mb-2">
+          <div className="px-3 py-4 mb-2 flex items-center justify-between">
             <span className="font-black text-2xl tracking-tighter text-gray-900 dark:text-white">Letters</span>
+            {user && <NotificationBell />}
           </div>
 
-          {/* Nav links */}
           {navItems.map(({ to, end, icon, label }) => (
             <NavLink key={to} to={to} end={end} className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-150 ${
@@ -54,17 +54,14 @@ export default function AppLayout() {
             </NavLink>
           ))}
 
-          {/* Dark mode toggle */}
           <button
             onClick={toggle}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100
-             dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all mt-1"
+            className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all mt-1"
           >
             <span className="text-base">{isDark ? "☀️" : "🌙"}</span>
             {isDark ? "Light mode" : "Dark mode"}
           </button>
 
-          {/* User card OR login button */}
           {user ? (
             <div className="mt-4 p-3 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-2 mb-2">
@@ -91,16 +88,13 @@ export default function AppLayout() {
             <div className="mt-4 space-y-2">
               <button
                 onClick={() => navigate("/login")}
-                className="w-full py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 
-                text-sm font-semibold rounded-2xl hover:opacity-90 transition active:scale-95"
+                className="w-full py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold rounded-2xl hover:opacity-90 transition"
               >
                 Sign In
               </button>
               <button
                 onClick={() => navigate("/login")}
-                className="w-full py-2.5 bg-white dark:bg-gray-900 border border-gray-200
-                 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-2xl
-                  hover:bg-gray-50 dark:hover:bg-gray-800 transition active:scale-95"
+                className="w-full py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition"
               >
                 Create account
               </button>
@@ -108,9 +102,8 @@ export default function AppLayout() {
           )}
         </aside>
 
-        {/* ── Main content ─────────────────────────── */}
+        {/* Main content */}
         <main className="flex-1 min-w-0 max-w-xl">
-          {/* Mobile header */}
           <div className="md:hidden flex items-center justify-between mb-4 sticky top-0 z-50 bg-gray-50 dark:bg-gray-950 py-3">
             <span className="font-black text-xl tracking-tighter text-gray-900 dark:text-white">Letters</span>
             <div className="flex items-center gap-1">
@@ -119,34 +112,25 @@ export default function AppLayout() {
                   `w-9 h-9 flex items-center justify-center rounded-xl text-base transition ${
                     isActive ? "bg-gray-900 dark:bg-white" : "hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`
-                }>
-                  {icon}
-                </NavLink>
+                }>{icon}</NavLink>
               ))}
+              {user && <NotificationBell />}
               <button onClick={toggle} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition text-base">
                 {isDark ? "☀️" : "🌙"}
               </button>
               {!user && (
-                <button
-                  onClick={() => navigate("/login")}
-                  className="px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-semibold rounded-xl hover:opacity-90 transition"
-                >
+                <button onClick={() => navigate("/login")} className="px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-semibold rounded-xl">
                   Login
                 </button>
               )}
             </div>
           </div>
-
           <Outlet />
         </main>
 
-        {/* ── Right sidebar ─────────────────────────── */}
+        {/* Right sidebar */}
         <aside className="hidden lg:block w-64 shrink-0 sticky top-4 h-fit space-y-4">
-
-          {/* Online users */}
           <OnlineUsers />
-
-          {/* Tips */}
           <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4">
             <h3 className="font-semibold text-sm text-gray-900 dark:text-white mb-3">✨ Tips</h3>
             <ul className="space-y-2 text-xs text-gray-500 dark:text-gray-400">
@@ -154,10 +138,9 @@ export default function AppLayout() {
               <li className="flex items-start gap-2"><span>🔖</span> Hover a post to bookmark it</li>
               <li className="flex items-start gap-2"><span>🗑️</span> Hover your post to delete it</li>
               <li className="flex items-start gap-2"><span>📊</span> Check Analytics for your stats</li>
+              <li className="flex items-start gap-2"><span>💬</span> DM anyone from Search page</li>
             </ul>
           </div>
-
-          {/* About */}
           <div className="bg-linear-to-br from-blue-500 to-purple-600 rounded-2xl p-4 text-white">
             <h3 className="font-bold text-sm mb-1">Letters Social</h3>
             <p className="text-xs opacity-80 leading-relaxed">A real-time social platform built with React, Firebase & Tailwind.</p>

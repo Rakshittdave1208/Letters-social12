@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useAuth } from "../auth/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import PostCard from "../posts/components/PostCard";
 import type { Post } from "../posts/types";
 import { PostCardSkeleton, ProfileSkeleton } from "../../components/ui/Skeleton";
+import { useFollow } from "../follow/hooks/useFollow";
 
 function formatTimestamp(ts: any): string {
   if (!ts) return "Just now";
@@ -18,27 +20,19 @@ function formatTimestamp(ts: any): string {
 }
 
 function getAvatarColor(name: string) {
-  const colors = [
-    "from-blue-500 to-indigo-600",
-    "from-purple-500 to-pink-600",
-    "from-green-500 to-teal-600",
-    "from-orange-500 to-red-600",
-    "from-cyan-500 to-blue-600",
-    "from-rose-500 to-pink-600",
-  ];
+  const colors = ["from-blue-500 to-indigo-600","from-purple-500 to-pink-600","from-green-500 to-teal-600","from-orange-500 to-red-600","from-cyan-500 to-blue-600","from-rose-500 to-pink-600"];
   return colors[name.charCodeAt(0) % colors.length];
 }
 
 export default function ProfilePage() {
   const { user }              = useAuth();
+  const navigate              = useNavigate();
   const [posts, setPosts]     = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const { counts }            = useFollow(user?.id ?? "", user?.name ?? "");
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    if (!user) { setLoading(false); return; }
     async function fetchMyPosts() {
       try {
         const q = query(collection(db, "posts"), where("userId", "==", user!.id));
@@ -46,22 +40,14 @@ export default function ProfilePage() {
         const myPosts = snap.docs.map((d) => {
           const data = d.data();
           return {
-            id:        d.id,
-            userId:    data.userId    ?? "",
-            author:    data.author    ?? "",
-            content:   data.content   ?? "",
-            createdAt: formatTimestamp(data.createdAt),
-            likes:     data.likes     ?? 0,
-            likedBy:   data.likedBy   ?? [],
-            comments:  data.comments  ?? [],
+            id: d.id, userId: data.userId ?? "", author: data.author ?? "",
+            content: data.content ?? "", createdAt: formatTimestamp(data.createdAt),
+            likes: data.likes ?? 0, likedBy: data.likedBy ?? [], comments: data.comments ?? [],
           } as Post;
         });
         setPosts(myPosts);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      } catch (err) { console.error(err); }
+      finally { setLoading(false); }
     }
     fetchMyPosts();
   }, [user]);
@@ -75,7 +61,8 @@ export default function ProfilePage() {
     return (
       <div className="text-center py-16 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl">
         <p className="text-5xl mb-4">🔐</p>
-        <p className="font-semibold text-gray-700 dark:text-gray-300">Please log in to view your profile</p>
+        <p className="font-semibold text-gray-700 dark:text-gray-300">Please log in</p>
+        <button onClick={() => navigate("/login")} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-full text-sm">Sign In</button>
       </div>
     );
   }
@@ -84,28 +71,35 @@ export default function ProfilePage() {
     <div className="space-y-5">
       {loading ? <ProfileSkeleton /> : (
         <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden">
-          <div className="h-24 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+          <div className="h-24 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500" />
           <div className="px-6 pb-6">
             <div className="flex items-end justify-between -mt-10 mb-4">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt={user.name} className="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-gray-900" />
               ) : (
-                <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${getAvatarColor(user?.name ?? "A")} text-white flex items-center justify-center text-2xl font-bold ring-4 ring-white dark:ring-gray-900`}>
+                <div className={`w-20 h-20 rounded-full bg-linear-to-br ${getAvatarColor(user?.name ?? "A")} text-white flex items-center justify-center text-2xl font-bold ring-4 ring-white dark:ring-gray-900`}>
                   {initials}
                 </div>
               )}
-              <button className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                Edit profile
+              <button
+                onClick={() => navigate("/profile/edit")}
+                className="px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+              >
+                ✏️ Edit profile
               </button>
             </div>
+
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">{user?.name}</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{user?.email}</p>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">📅 Joined {joinDate}</p>
-            <div className="flex gap-8 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+
+            <div className="flex flex-wrap gap-5 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
               {[
-                { label: "Posts",    value: posts.length },
-                { label: "Likes",    value: totalLikes },
-                { label: "Comments", value: totalComments },
+                { label: "Posts",     value: posts.length },
+                { label: "Likes",     value: totalLikes },
+                { label: "Comments",  value: totalComments },
+                { label: "Followers", value: counts.followers },
+                { label: "Following", value: counts.following },
               ].map(({ label, value }) => (
                 <div key={label}>
                   <p className="text-lg font-bold text-gray-900 dark:text-white">{value}</p>
@@ -128,9 +122,7 @@ export default function ProfilePage() {
             <p className="text-sm text-gray-400 mt-1">Share something on the home feed!</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {posts.map((post) => <PostCard key={post.id} post={post} />)}
-          </div>
+          <div className="space-y-4">{posts.map((post) => <PostCard key={post.id} post={post} />)}</div>
         )}
       </div>
     </div>

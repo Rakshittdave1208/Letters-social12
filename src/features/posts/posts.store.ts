@@ -1,9 +1,4 @@
-// features/posts/posts.store.ts
-// ─────────────────────────────────────────────────────────
-// Same shape as before — only change:
-// currentUserId now defaults to null (auth store owns it).
-// Call syncUser() from App once auth state resolves.
-// ─────────────────────────────────────────────────────────
+
 
 import { create } from "zustand";
 
@@ -29,6 +24,13 @@ type PostsUIState = {
 
 export const usePostsStore = create<PostsUIState>((set) => ({
   // ✅ No longer hardcoded — synced from auth
+  posts: [],
+  loading: false,
+  error: null,
+  addComment: () => {},
+  fetchPosts: () => {},
+  likePost: () => {},
+  addPost: () => {},
   currentUserId: null,
 
   selectedPostId:    null,

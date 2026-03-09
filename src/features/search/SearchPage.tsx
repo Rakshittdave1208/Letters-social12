@@ -111,7 +111,7 @@ export default function SearchPage() {
                 {u.photoURL ? (
                   <img src={u.photoURL} alt={u.name} className="w-10 h-10 rounded-full object-cover" />
                 ) : (
-                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${getAvatarColor(u.name ?? "A")} text-white flex items-center justify-center text-sm font-bold`}>
+                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${getAvatarColor(u.name ?? "A")} text-white flex items-center justify-center text-sm font-bold`}>
                     {initials}
                   </div>
                 )}
